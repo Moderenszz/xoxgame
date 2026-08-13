@@ -1,4 +1,3 @@
-// Import Firebase SDK (Menggunakan CDN v9+ Modular)
 import { initializeApp } from "https://www.gstatic.com/firebasejs/9.23.0/firebase-app.js";
 import { 
     getAuth, 
@@ -15,7 +14,6 @@ import {
     updateDoc, 
     collection, 
     onSnapshot, 
-    arrayUnion, 
     increment 
 } from "https://www.gstatic.com/firebasejs/9.23.0/firebase-firestore.js";
 
@@ -32,7 +30,6 @@ const firebaseConfig = {
     appId: "GANTI_DENGAN_APP_ID_KAMU"
 };
 
-// Inisialisasi Firebase
 const app = initializeApp(firebaseConfig);
 const auth = getAuth(app);
 const db = getFirestore(app);
@@ -41,18 +38,32 @@ const db = getFirestore(app);
 let currentUser = null;
 let currentPlayerData = null;
 let activeMatchId = null;
-let mySymbol = ''; // 'X' atau 'O'
+let mySymbol = ''; 
 
-// Elemen DOM
+// Elemen DOM Auth
 const authScreen = document.getElementById('auth-screen');
-const gameScreen = document.getElementById('game-screen');
-const usernameInput = document.getElementById('auth-username');
-const passwordInput = document.getElementById('auth-password');
-const btnLogin = document.getElementById('btn-login');
-const btnRegister = document.getElementById('btn-register');
-const authError = document.getElementById('auth-error');
-const btnLogout = document.getElementById('btn-logout');
+const loginBox = document.getElementById('login-box');
+const registerBox = document.getElementById('register-box');
 
+const linkToRegister = document.getElementById('link-to-register');
+const linkToLogin = document.getElementById('link-to-login');
+
+// Elemen Register
+const regUsername = document.getElementById('register-username');
+const regEmail = document.getElementById('register-email');
+const regPassword = document.getElementById('register-password');
+const btnRegister = document.getElementById('btn-register');
+const regError = document.getElementById('register-error');
+
+// Elemen Login
+const logEmail = document.getElementById('login-email');
+const logPassword = document.getElementById('login-password');
+const btnLogin = document.getElementById('btn-login');
+const logError = document.getElementById('login-error');
+
+// Elemen Game
+const gameScreen = document.getElementById('game-screen');
+const btnLogout = document.getElementById('btn-logout');
 const displayUsername = document.getElementById('display-username');
 const myAvatar = document.getElementById('my-avatar');
 const statWins = document.getElementById('stat-wins');
@@ -69,55 +80,84 @@ const cells = document.querySelectorAll('.cell');
 const btnQuitMatch = document.getElementById('btn-quit-match');
 
 // ==========================================
-// 1. SISTEM AUTENTIKASI (LOGIN & REGISTER)
+// 1. TOGGLE FORM LOGIN / REGISTER
 // ==========================================
-// Karena Firebase Auth butuh format email, kita akali dengan mengubah username jadi email palsu (contoh: username@xoxarena.com)
+linkToRegister.addEventListener('click', (e) => {
+    e.preventDefault();
+    loginBox.classList.add('hidden');
+    registerBox.classList.remove('hidden');
+    logError.textContent = "";
+});
 
+linkToLogin.addEventListener('click', (e) => {
+    e.preventDefault();
+    registerBox.classList.add('hidden');
+    loginBox.classList.remove('hidden');
+    regError.textContent = "";
+});
+
+// ==========================================
+// 2. SISTEM REGISTER (Username, Gmail, Password)
+// ==========================================
 btnRegister.addEventListener('click', async () => {
-    const username = usernameInput.value.trim();
-    const password = passwordInput.value.trim();
+    const username = regUsername.value.trim();
+    const email = regEmail.value.trim();
+    const password = regPassword.value.trim();
 
-    if (!username || !password) {
-        authError.textContent = "Username dan password harus diisi!";
+    if (!username || !email || !password) {
+        regError.textContent = "Semua kolom harus diisi!";
         return;
     }
 
-    const email = `${username.toLowerCase()}@xoxarena.com`;
+    if (password.length < 6) {
+        regError.textContent = "Password minimal 6 karakter!";
+        return;
+    }
+
     try {
         const userCred = await createUserWithEmailAndPassword(auth, email, password);
-        // Buat data profil user di Firestore
+        
         await setDoc(doc(db, "users", userCred.user.uid), {
             username: username,
+            email: email,
             uid: userCred.user.uid,
             wins: 0,
             loses: 0,
             total: 0,
             status: "online"
         });
-        authError.textContent = "";
+
+        regError.textContent = "";
     } catch (error) {
-        authError.textContent = error.message;
+        if (error.code === 'auth/email-already-in-use') {
+            regError.textContent = "Email sudah terdaftar!";
+        } else {
+            regError.textContent = error.message;
+        }
     }
 });
 
+// ==========================================
+// 3. SISTEM LOGIN (Email & Password)
+// ==========================================
 btnLogin.addEventListener('click', async () => {
-    const username = usernameInput.value.trim();
-    const password = passwordInput.value.trim();
+    const email = logEmail.value.trim();
+    const password = logPassword.value.trim();
 
-    if (!username || !password) {
-        authError.textContent = "Username dan password harus diisi!";
+    if (!email || !password) {
+        logError.textContent = "Email dan password harus diisi!";
         return;
     }
 
-    const email = `${username.toLowerCase()}@xoxarena.com`;
     try {
         await signInWithEmailAndPassword(auth, email, password);
-        authError.textContent = "";
+        logError.textContent = "";
     } catch (error) {
-        authError.textContent = "Login gagal: Username atau password salah.";
+        logError.textContent = "Login gagal: Email atau password salah.";
     }
 });
 
+// LOGOUT
 btnLogout.addEventListener('click', async () => {
     if (currentUser) {
         await updateDoc(doc(db, "users", currentUser.uid), { status: "offline" });
@@ -125,38 +165,39 @@ btnLogout.addEventListener('click', async () => {
     signOut(auth);
 });
 
-// Pantau Status Auth
+// PANTAU STATUS LOGIN
 onAuthStateChanged(auth, async (user) => {
     if (user) {
         currentUser = user;
         authScreen.classList.add('hidden');
         gameScreen.classList.remove('hidden');
 
-        // Ambil data user dari Firestore
         const userDocRef = doc(db, "users", user.uid);
         const userDoc = await getDoc(userDocRef);
+        
         if (userDoc.exists()) {
             currentPlayerData = userDoc.data();
             displayUsername.textContent = currentPlayerData.username;
             myAvatar.textContent = currentPlayerData.username.charAt(0).toUpperCase();
             updateStatsUI(currentPlayerData);
 
-            // Set status jadi online
             await updateDoc(userDocRef, { status: "online" });
         }
 
-        // Mulai listen daftar pemain online
         loadOnlinePlayers();
     } else {
         currentUser = null;
         currentPlayerData = null;
         gameScreen.classList.add('hidden');
         authScreen.classList.remove('hidden');
+        
+        regPassword.value = '';
+        logPassword.value = '';
     }
 });
 
 // ==========================================
-// 2. DAFTAR PEMAIN ONLINE & SEARCH
+// 4. DAFTAR PEMAIN ONLINE & SEARCH
 // ==========================================
 function loadOnlinePlayers() {
     const usersCol = collection(db, "users");
@@ -164,8 +205,7 @@ function loadOnlinePlayers() {
         playerListEl.innerHTML = '';
         snapshot.forEach((docSnap) => {
             const data = docSnap.data();
-            // Jangan tampilkan diri sendiri di list
-            if (currentUser && data.uid !== currentUser.uid) {
+            if (currentUser && data.uid !== currentUser.uid && data.status === "online") {
                 renderPlayerItem(data);
             }
         });
@@ -182,25 +222,19 @@ function renderPlayerItem(player) {
     playerListEl.appendChild(li);
 }
 
-// Fitur Search Player
 searchPlayerInput.addEventListener('input', (e) => {
     const keyword = e.target.value.toLowerCase();
     const items = playerListEl.querySelectorAll('.player-item');
     items.forEach(item => {
         const name = item.querySelector('span').textContent.toLowerCase();
-        if (name.includes(keyword)) {
-            item.style.display = 'flex';
-        } else {
-            item.style.display = 'none';
-        }
+        item.style.display = name.includes(keyword) ? 'flex' : 'none';
     });
 });
 
 // ==========================================
-// 3. SISTEM TANTANGAN & PERTARUNGAN 1V1
+// 5. SISTEM GAME X-O-X (Tantangan & Real-time)
 // ==========================================
 window.challengePlayer = async (targetUid) => {
-    // Buat match baru di koleksi 'matches'
     const matchRef = doc(collection(db, "matches"));
     await setDoc(matchRef, {
         playerX: currentUser.uid,
@@ -231,18 +265,15 @@ function clearBoardUI() {
     });
 }
 
-// Listener Real-time Pertandingan
 function listenToMatch(matchId) {
     onSnapshot(doc(db, "matches", matchId), (docSnap) => {
         if (!docSnap.exists()) return;
         const matchData = docSnap.data();
 
-        // Update Papan Game
         matchData.board.forEach((val, idx) => {
             cells[idx].textContent = val;
         });
 
-        // Cek Status Giliran
         if (matchData.status === 'playing') {
             if (matchData.turn === mySymbol) {
                 matchStatus.textContent = "Giliran kamu! Silahkan klik kotak.";
@@ -262,7 +293,6 @@ function listenToMatch(matchId) {
     });
 }
 
-// Aksi Klik Kotak X-O-X
 cells.forEach((cell, index) => {
     cell.addEventListener('click', async () => {
         if (!activeMatchId) return;
@@ -271,12 +301,8 @@ cells.forEach((cell, index) => {
         const matchDoc = await getDoc(matchRef);
         const matchData = matchDoc.data();
 
-        // Validasi giliran & kotak kosong
-        if (matchData.status !== 'playing') return;
-        if (matchData.turn !== mySymbol) return;
-        if (matchData.board[index] !== "") return;
+        if (matchData.status !== 'playing' || matchData.turn !== mySymbol || matchData.board[index] !== "") return;
 
-        // Update papan lokal & database
         let newBoard = matchData.board;
         newBoard[index] = mySymbol;
 
@@ -284,57 +310,31 @@ cells.forEach((cell, index) => {
         const winner = checkWinner(newBoard);
 
         if (winner) {
-            await updateDoc(matchRef, {
-                board: newBoard,
-                status: 'finished',
-                winner: winner
-            });
+            await updateDoc(matchRef, { board: newBoard, status: 'finished', winner: winner });
             updateStatsInDB(winner);
         } else {
-            await updateDoc(matchRef, {
-                board: newBoard,
-                turn: nextTurn
-            });
+            await updateDoc(matchRef, { board: newBoard, turn: nextTurn });
         }
     });
 });
 
-// Logika Cek Pemenang Tic-Tac-Toe
 function checkWinner(board) {
-    const winPatterns = [
-        [0,1,2], [3,4,5], [6,7,8], // Baris
-        [0,3,6], [1,4,7], [2,5,8], // Kolom
-        [0,4,8], [2,4,6]  // Diagonal
-    ];
-
-    for (let pattern of winPatterns) {
-        const [a, b, c] = pattern;
-        if (board[a] && board[a] === board[b] && board[a] === board[c]) {
-            return board[a];
-        }
+    const winPatterns = [[0,1,2],[3,4,5],[6,7,8],[0,3,6],[1,4,7],[2,5,8],[0,4,8],[2,4,6]];
+    for (let [a, b, c] of winPatterns) {
+        if (board[a] && board[a] === board[b] && board[a] === board[c]) return board[a];
     }
-
     if (!board.includes("")) return 'draw';
     return null;
 }
 
-// Update Statistik ke Database
 async function updateStatsInDB(winner) {
     const userRef = doc(db, "users", currentUser.uid);
     if (winner === mySymbol) {
-        await updateDoc(userRef, {
-            wins: increment(1),
-            total: increment(1)
-        });
+        await updateDoc(userRef, { wins: increment(1), total: increment(1) });
     } else if (winner !== 'draw') {
-        await updateDoc(userRef, {
-            loses: increment(1),
-            total: increment(1)
-        });
+        await updateDoc(userRef, { loses: increment(1), total: increment(1) });
     } else {
-        await updateDoc(userRef, {
-            total: increment(1)
-        });
+        await updateDoc(userRef, { total: increment(1) });
     }
 }
 

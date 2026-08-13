@@ -12,16 +12,31 @@
 
     <!-- HALAMAN LOGIN / AUTH -->
     <div id="auth-screen" class="auth-container">
-        <div class="auth-box">
+        <!-- Form Login -->
+        <div id="login-box" class="auth-box">
             <h2>XOX Arena</h2>
-            <p>Masuk atau daftar untuk mulai bertarung!</p>
-            <input type="text" id="auth-username" placeholder="Username">
-            <input type="password" id="auth-password" placeholder="Password">
+            <p>Masuk untuk bertarung!</p>
+            <input type="email" id="login-email" placeholder="Email">
+            <input type="password" id="login-password" placeholder="Password">
             <div class="auth-buttons">
                 <button id="btn-login" class="btn-primary">Login</button>
-                <button id="btn-register" class="btn-secondary">Register</button>
             </div>
-            <p id="auth-error" class="error-text"></p>
+            <p id="login-error" class="error-text"></p>
+            <p style="margin-top: 15px; font-size: 12px; color: #94a3b8;">Belum punya akun? <a href="#" id="link-to-register" style="color: #38bdf8; text-decoration: none;">Daftar di sini</a></p>
+        </div>
+
+        <!-- Form Register -->
+        <div id="register-box" class="auth-box hidden">
+            <h2>Daftar XOX Arena</h2>
+            <p>Buat akun baru</p>
+            <input type="text" id="register-username" placeholder="Username">
+            <input type="email" id="register-email" placeholder="Email (Cth: nama@gmail.com)">
+            <input type="password" id="register-password" placeholder="Password (Min 6 Karakter)">
+            <div class="auth-buttons">
+                <button id="btn-register" class="btn-primary">Register</button>
+            </div>
+            <p id="register-error" class="error-text"></p>
+            <p style="margin-top: 15px; font-size: 12px; color: #94a3b8;">Sudah punya akun? <a href="#" id="link-to-login" style="color: #38bdf8; text-decoration: none;">Login di sini</a></p>
         </div>
     </div>
 
@@ -45,7 +60,7 @@
             <div class="player-list-container">
                 <h3>Pemain Online</h3>
                 <ul id="player-list">
-                    <!-- Daftar player akan masuk lewat JavaScript -->
+                    <!-- Daftar player masuk via JS -->
                 </ul>
             </div>
 
@@ -70,7 +85,7 @@
                     <p>Pilih pemain dari daftar di sebelah kiri untuk menantang mereka bertarung secara 1v1.</p>
                 </div>
 
-                <!-- Papan Game (Hidden sampai match dimulai) -->
+                <!-- Papan Game -->
                 <div id="game-board-container" class="hidden">
                     <div class="match-info">
                         <span id="match-status">Menunggu lawan...</span>
@@ -86,13 +101,13 @@
                         <div class="cell" data-index="7"></div>
                         <div class="cell" data-index="8"></div>
                     </div>
-                    <button id="btn-quit-match" class="btn-secondary hidden">Keluar Pertandingan</button>
+                    <button id="btn-quit-match" class="btn-secondary hidden" style="margin-top: 20px;">Keluar Pertandingan</button>
                 </div>
             </div>
         </main>
     </div>
 
-    <!-- Script Firebase & Logika Game -->
+    <!-- Script Utama -->
     <script type="module" src="script.js"></script>
 </body>
 </html>

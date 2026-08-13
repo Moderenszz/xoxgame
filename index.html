@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>XOX Arena - Modern PvP</title>
+    <title>XOX Arena - Local PvP</title>
     <!-- Google Fonts -->
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
     <style>
@@ -183,58 +183,29 @@
             color: #4ade80;
         }
 
-        .search-box {
-            margin: 20px 0;
-        }
-
-        .search-box input {
-            width: 100%;
-            padding: 10px 14px;
-            background: rgba(30, 41, 59, 0.4);
-            border: 1px solid #334155;
-            border-radius: 8px;
-            color: #fff;
-            outline: none;
-        }
-
-        .player-list-container {
+        .menu-list {
+            margin-top: 20px;
             flex: 1;
-            overflow-y: auto;
-        }
-
-        .player-list-container h3 {
-            font-size: 13px;
-            color: #94a3b8;
-            margin-bottom: 10px;
-            text-transform: uppercase;
-            letter-spacing: 0.5px;
-        }
-
-        #player-list {
-            list-style: none;
-        }
-
-        #player-list li {
-            padding: 10px 12px;
-            background: rgba(30, 41, 59, 0.3);
-            margin-bottom: 8px;
-            border-radius: 8px;
             display: flex;
-            justify-content: space-between;
-            align-items: center;
+            flex-direction: column;
+            gap: 10px;
         }
 
-        #player-list span {
-            font-size: 14px;
-            color: #e2e8f0;
+        .menu-btn {
+            background: rgba(30, 41, 59, 0.5);
+            border: 1px solid #334155;
+            color: #cbd5e1;
+            padding: 12px;
+            border-radius: 8px;
+            text-align: left;
+            font-weight: 500;
+            transition: 0.2s;
         }
 
-        #player-list button {
-            background: linear-gradient(135deg, #0284c7, #38bdf8);
-            color: white;
-            font-size: 12px;
-            padding: 6px 12px;
-            border-radius: 6px;
+        .menu-btn:hover, .menu-btn.active {
+            background: rgba(56, 189, 248, 0.2);
+            border-color: #38bdf8;
+            color: #fff;
         }
 
         .stats-box {
@@ -300,6 +271,7 @@
         .welcome-banner p {
             color: #94a3b8;
             font-size: 14px;
+            margin-bottom: 20px;
         }
 
         /* GAME BOARD */
@@ -347,7 +319,7 @@
         <div id="login-box" class="auth-box">
             <h2>XOX Arena</h2>
             <p>Masuk untuk bertarung!</p>
-            <input type="email" id="login-email" placeholder="Email">
+            <input type="text" id="login-username" placeholder="Username">
             <input type="password" id="login-password" placeholder="Password">
             <div class="auth-buttons">
                 <button id="btn-login" class="btn-primary">Login</button>
@@ -363,7 +335,6 @@
             <h2>Daftar XOX Arena</h2>
             <p>Buat akun baru</p>
             <input type="text" id="register-username" placeholder="Username">
-            <input type="email" id="register-email" placeholder="Gmail (Cth: nama@gmail.com)">
             <input type="password" id="register-password" placeholder="Password (Min 6 Karakter)">
             <div class="auth-buttons">
                 <button id="btn-register" class="btn-primary">Register</button>
@@ -386,13 +357,9 @@
                 </div>
             </div>
 
-            <div class="search-box">
-                <input type="text" id="search-player" placeholder="Cari pemain...">
-            </div>
-
-            <div class="player-list-container">
-                <h3>Pemain Online</h3>
-                <ul id="player-list"></ul>
+            <div class="menu-list">
+                <button class="menu-btn active" id="menu-pvp">🎮 Mode PvP Lokal (2 Player)</button>
+                <button class="menu-btn" id="menu-bot">🤖 Lawan Bot (AI)</button>
             </div>
 
             <div class="stats-box">
@@ -405,19 +372,20 @@
 
         <main class="main-arena">
             <header class="arena-header">
-                <h2>Battle Arena X-O-X</h2>
+                <h2 id="mode-title">Battle Arena: PvP Lokal</h2>
                 <button id="btn-logout" class="btn-danger">Logout</button>
             </header>
 
             <div id="arena-content" class="arena-content">
-                <div class="welcome-banner">
-                    <h3>Selamat Datang di XOX Arena!</h3>
-                    <p>Pilih pemain dari daftar di sebelah kiri untuk menantang mereka bertarung secara 1v1.</p>
+                <div id="welcome-banner" class="welcome-banner">
+                    <h3>Mulai Pertandingan!</h3>
+                    <p>Mainkan Tic-Tac-Toe secara bergantian di perangkat ini bersama teman atau lawan Bot.</p>
+                    <button id="btn-start-game" class="btn-primary">Mulai Main</button>
                 </div>
 
                 <div id="game-board-container" class="hidden">
                     <div class="match-info">
-                        <span id="match-status">Menunggu lawan...</span>
+                        <span id="match-status">Giliran: Player X</span>
                     </div>
                     <div class="board">
                         <div class="cell" data-index="0"></div>
@@ -430,53 +398,19 @@
                         <div class="cell" data-index="7"></div>
                         <div class="cell" data-index="8"></div>
                     </div>
-                    <button id="btn-quit-match" class="btn-secondary hidden" style="margin-top: 20px; width: 100%;">Keluar Pertandingan</button>
+                    <button id="btn-quit-match" class="btn-secondary" style="margin-top: 20px; width: 100%;">Selesai / Kembali</button>
                 </div>
             </div>
         </main>
     </div>
 
-    <!-- Script Firebase & Game Logic -->
-    <script type="module">
-        import { initializeApp } from "https://www.gstatic.com/firebasejs/9.23.0/firebase-app.js";
-        import { 
-            getAuth, 
-            createUserWithEmailAndPassword, 
-            signInWithEmailAndPassword, 
-            signOut, 
-            onAuthStateChanged 
-        } from "https://www.gstatic.com/firebasejs/9.23.0/firebase-auth.js";
-        import { 
-            getFirestore, 
-            doc, 
-            setDoc, 
-            getDoc, 
-            updateDoc, 
-            collection, 
-            onSnapshot, 
-            increment 
-        } from "https://www.gstatic.com/firebasejs/9.23.0/firebase-firestore.js";
-
-        // ==========================================
-        // GANTI DENGAN KONFIGURASI FIREBASE KAMU
-        // ==========================================
-        const firebaseConfig = {
-            apiKey: "GANTI_DENGAN_API_KEY_KAMU",
-            authDomain: "GANTI_DENGAN_AUTH_DOMAIN_KAMU",
-            projectId: "GANTI_DENGAN_PROJECT_ID_KAMU",
-            storageBucket: "GANTI_DENGAN_STORAGE_BUCKET_KAMU",
-            messagingSenderId: "GANTI_DENGAN_MESSAGING_SENDER_ID_KAMU",
-            appId: "GANTI_DENGAN_APP_ID_KAMU"
-        };
-
-        const app = initializeApp(firebaseConfig);
-        const auth = getAuth(app);
-        const db = getFirestore(app);
-
+    <!-- Script Game Logika Tanpa Firebase -->
+    <script>
         let currentUser = null;
-        let currentPlayerData = null;
-        let activeMatchId = null;
-        let mySymbol = '';
+        let gameMode = 'pvp'; // 'pvp' atau 'bot'
+        let board = Array(9).fill("");
+        let currentTurn = 'X';
+        let isGameActive = false;
 
         // DOM Elements
         const authScreen = document.getElementById('auth-screen');
@@ -486,12 +420,11 @@
         const linkToLogin = document.getElementById('link-to-login');
 
         const regUsername = document.getElementById('register-username');
-        const regEmail = document.getElementById('register-email');
         const regPassword = document.getElementById('register-password');
         const btnRegister = document.getElementById('btn-register');
         const regError = document.getElementById('register-error');
 
-        const logEmail = document.getElementById('login-email');
+        const logUsername = document.getElementById('login-username');
         const logPassword = document.getElementById('login-password');
         const btnLogin = document.getElementById('btn-login');
         const logError = document.getElementById('login-error');
@@ -504,16 +437,18 @@
         const statLoses = document.getElementById('stat-loses');
         const statTotal = document.getElementById('stat-total');
 
-        const playerListEl = document.getElementById('player-list');
-        const searchPlayerInput = document.getElementById('search-player');
+        const menuPvp = document.getElementById('menu-pvp');
+        const menuBot = document.getElementById('menu-bot');
+        const modeTitle = document.getElementById('mode-title');
 
-        const welcomeBanner = document.querySelector('.welcome-banner');
+        const welcomeBanner = document.getElementById('welcome-banner');
         const gameBoardContainer = document.getElementById('game-board-container');
+        const btnStartGame = document.getElementById('btn-start-game');
         const matchStatus = document.getElementById('match-status');
         const cells = document.querySelectorAll('.cell');
         const btnQuitMatch = document.getElementById('btn-quit-match');
 
-        // Toggle Form
+        // Toggle Form Auth
         linkToRegister.addEventListener('click', () => {
             loginBox.classList.add('hidden');
             registerBox.classList.remove('hidden');
@@ -526,230 +461,218 @@
             regError.textContent = "";
         });
 
-        // Register Logic
-        btnRegister.addEventListener('click', async () => {
+        // Register (Simpan ke LocalStorage)
+        btnRegister.addEventListener('click', () => {
             const username = regUsername.value.trim();
-            const email = regEmail.value.trim();
             const password = regPassword.value.trim();
 
-            if (!username || !email || !password) {
+            if (!username || !password) {
                 regError.textContent = "Semua kolom harus diisi!";
                 return;
             }
-
             if (password.length < 6) {
                 regError.textContent = "Password minimal 6 karakter!";
                 return;
             }
 
-            try {
-                const userCred = await createUserWithEmailAndPassword(auth, email, password);
-                await setDoc(doc(db, "users", userCred.user.uid), {
-                    username: username,
-                    email: email,
-                    uid: userCred.user.uid,
-                    wins: 0,
-                    loses: 0,
-                    total: 0,
-                    status: "online"
-                });
-                regError.textContent = "";
-            } catch (error) {
-                regError.textContent = error.code === 'auth/email-already-in-use' ? "Email sudah terdaftar!" : error.message;
-            }
-        });
-
-        // Login Logic
-        btnLogin.addEventListener('click', async () => {
-            const email = logEmail.value.trim();
-            const password = logPassword.value.trim();
-
-            if (!email || !password) {
-                logError.textContent = "Email dan password harus diisi!";
+            let users = JSON.parse(localStorage.getItem('xox_users')) || {};
+            if (users[username]) {
+                regError.textContent = "Username sudah terdaftar!";
                 return;
             }
 
-            try {
-                await signInWithEmailAndPassword(auth, email, password);
-                logError.textContent = "";
-            } catch (error) {
-                logError.textContent = "Login gagal: Email atau password salah.";
+            users[username] = {
+                password: password,
+                wins: 0,
+                loses: 0,
+                total: 0
+            };
+
+            localStorage.setItem('xox_users', JSON.stringify(users));
+            alert("Pendaftaran berhasil! Silakan login.");
+            registerBox.classList.add('hidden');
+            loginBox.classList.remove('hidden');
+            regUsername.value = '';
+            regPassword.value = '';
+        });
+
+        // Login (Cek LocalStorage)
+        btnLogin.addEventListener('click', () => {
+            const username = logUsername.value.trim();
+            const password = logPassword.value.trim();
+
+            let users = JSON.parse(localStorage.getItem('xox_users')) || {};
+
+            if (!users[username] || users[username].password !== password) {
+                logError.textContent = "Username atau password salah!";
+                return;
+            }
+
+            currentUser = username;
+            localStorage.setItem('xox_current_user', currentUser);
+            initGameSession();
+        });
+
+        // Logout
+        btnLogout.addEventListener('click', () => {
+            localStorage.removeItem('xox_current_user');
+            currentUser = null;
+            gameScreen.classList.add('hidden');
+            authScreen.classList.remove('hidden');
+            logUsername.value = '';
+            logPassword.value = '';
+        });
+
+        // Cek Sesi Saat Halaman Dimuat
+        window.addEventListener('DOMContentLoaded', () => {
+            const savedUser = localStorage.getItem('xox_current_user');
+            if (savedUser) {
+                currentUser = savedUser;
+                initGameSession();
             }
         });
 
-        btnLogout.addEventListener('click', async () => {
-            if (currentUser) {
-                await updateDoc(doc(db, "users", currentUser.uid), { status: "offline" });
-            }
-            signOut(auth);
-        });
-
-        onAuthStateChanged(auth, async (user) => {
-            if (user) {
-                currentUser = user;
-                authScreen.classList.add('hidden');
-                gameScreen.classList.remove('hidden');
-
-                const userDocRef = doc(db, "users", user.uid);
-                const userDoc = await getDoc(userDocRef);
-                
-                if (userDoc.exists()) {
-                    currentPlayerData = userDoc.data();
-                    displayUsername.textContent = currentPlayerData.username;
-                    myAvatar.textContent = currentPlayerData.username.charAt(0).toUpperCase();
-                    updateStatsUI(currentPlayerData);
-
-                    await updateDoc(userDocRef, { status: "online" });
-                }
-
-                loadOnlinePlayers();
-            } else {
-                currentUser = null;
-                currentPlayerData = null;
-                gameScreen.classList.add('hidden');
-                authScreen.classList.remove('hidden');
-                regPassword.value = '';
-                logPassword.value = '';
-            }
-        });
-
-        function loadOnlinePlayers() {
-            const usersCol = collection(db, "users");
-            onSnapshot(usersCol, (snapshot) => {
-                playerListEl.innerHTML = '';
-                snapshot.forEach((docSnap) => {
-                    const data = docSnap.data();
-                    if (currentUser && data.uid !== currentUser.uid && data.status === "online") {
-                        renderPlayerItem(data);
-                    }
-                });
-            });
+        function initGameSession() {
+            authScreen.classList.add('hidden');
+            gameScreen.classList.remove('hidden');
+            displayUsername.textContent = currentUser;
+            myAvatar.textContent = currentUser.charAt(0).toUpperCase();
+            updateStatsUI();
         }
 
-        function renderPlayerItem(player) {
-            const li = document.createElement('li');
-            li.innerHTML = `
-                <span>${player.username}</span>
-                <button id="challenge-${player.uid}">Tantang</button>
-            `;
-            playerListEl.appendChild(li);
-
-            document.getElementById(`challenge-${player.uid}`).addEventListener('click', () => {
-                window.challengePlayer(player.uid);
-            });
-        }
-
-        searchPlayerInput.addEventListener('input', (e) => {
-            const keyword = e.target.value.toLowerCase();
-            const items = playerListEl.querySelectorAll('li');
-            items.forEach(item => {
-                const name = item.querySelector('span').textContent.toLowerCase();
-                item.style.display = name.includes(keyword) ? 'flex' : 'none';
-            });
+        // Pindah Menu Mode
+        menuPvp.addEventListener('click', () => {
+            gameMode = 'pvp';
+            menuPvp.classList.add('active');
+            menuBot.classList.remove('active');
+            modeTitle.textContent = "Battle Arena: PvP Lokal";
+            resetMatch();
         });
 
-        window.challengePlayer = async (targetUid) => {
-            const matchRef = doc(collection(db, "matches"));
-            await setDoc(matchRef, {
-                playerX: currentUser.uid,
-                playerO: targetUid,
-                board: Array(9).fill(""),
-                turn: 'X',
-                status: 'playing',
-                winner: null
-            });
+        menuBot.addEventListener('click', () => {
+            gameMode = 'bot';
+            menuBot.classList.add('active');
+            menuPvp.classList.remove('active');
+            modeTitle.textContent = "Battle Arena: Lawan Bot";
+            resetMatch();
+        });
 
-            activeMatchId = matchRef.id;
-            mySymbol = 'X';
-            startMatchUI();
-            listenToMatch(activeMatchId);
-        };
-
-        function startMatchUI() {
+        btnStartGame.addEventListener('click', () => {
             welcomeBanner.classList.add('hidden');
             gameBoardContainer.classList.remove('hidden');
-            btnQuitMatch.classList.remove('hidden');
-            cells.forEach(c => c.textContent = '');
-        }
-
-        function listenToMatch(matchId) {
-            onSnapshot(doc(db, "matches", matchId), (docSnap) => {
-                if (!docSnap.exists()) return;
-                const matchData = docSnap.data();
-
-                matchData.board.forEach((val, idx) => {
-                    cells[idx].textContent = val;
-                });
-
-                if (matchData.status === 'playing') {
-                    matchStatus.textContent = matchData.turn === mySymbol ? "Giliran kamu!" : "Menunggu giliran lawan...";
-                } else if (matchData.status === 'finished') {
-                    if (matchData.winner === 'draw') {
-                        matchStatus.textContent = "Seri!";
-                    } else {
-                        matchStatus.textContent = matchData.winner === mySymbol ? "Kamu Menang!" : "Kamu Kalah!";
-                    }
-                }
-            });
-        }
-
-        cells.forEach((cell, index) => {
-            cell.addEventListener('click', async () => {
-                if (!activeMatchId) return;
-
-                const matchRef = doc(db, "matches", activeMatchId);
-                const matchDoc = await getDoc(matchRef);
-                const matchData = matchDoc.data();
-
-                if (matchData.status !== 'playing' || matchData.turn !== mySymbol || matchData.board[index] !== "") return;
-
-                let newBoard = matchData.board;
-                newBoard[index] = mySymbol;
-
-                const nextTurn = mySymbol === 'X' ? 'O' : 'X';
-                const winner = checkWinner(newBoard);
-
-                if (winner) {
-                    await updateDoc(matchRef, { board: newBoard, status: 'finished', winner: winner });
-                    updateStatsInDB(winner);
-                } else {
-                    await updateDoc(matchRef, { board: newBoard, turn: nextTurn });
-                }
-            });
+            isGameActive = true;
+            resetBoardData();
         });
-
-        function checkWinner(board) {
-            const patterns = [[0,1,2],[3,4,5],[6,7,8],[0,3,6],[1,4,7],[2,5,8],[0,4,8],[2,4,6]];
-            for (let [a, b, c] of patterns) {
-                if (board[a] && board[a] === board[b] && board[a] === board[c]) return board[a];
-            }
-            return board.includes("") ? null : 'draw';
-        }
-
-        async function updateStatsInDB(winner) {
-            const userRef = doc(db, "users", currentUser.uid);
-            if (winner === mySymbol) {
-                await updateDoc(userRef, { wins: increment(1), total: increment(1) });
-            } else if (winner !== 'draw') {
-                await updateDoc(userRef, { loses: increment(1), total: increment(1) });
-            } else {
-                await updateDoc(userRef, { total: increment(1) });
-            }
-        }
-
-        function updateStatsUI(data) {
-            statWins.textContent = data.wins || 0;
-            statLoses.textContent = data.loses || 0;
-            statTotal.textContent = data.total || 0;
-        }
 
         btnQuitMatch.addEventListener('click', () => {
-            activeMatchId = null;
             gameBoardContainer.classList.add('hidden');
             welcomeBanner.classList.remove('hidden');
-            btnQuitMatch.classList.add('hidden');
-            matchStatus.textContent = "Menunggu lawan...";
+            isGameActive = false;
         });
+
+        function resetMatch() {
+            gameBoardContainer.classList.add('hidden');
+            welcomeBanner.classList.remove('hidden');
+            isGameActive = false;
+        }
+
+        function resetBoardData() {
+            board = Array(9).fill("");
+            currentTurn = 'X';
+            matchStatus.textContent = "Giliran: Player X";
+            cells.forEach(c => c.textContent = "");
+        }
+
+        // Logika Klik Sel Papan
+        cells.forEach((cell, index) => {
+            cell.addEventListener('click', () => {
+                if (!isGameActive || board[index] !== "") return;
+
+                board[index] = currentTurn;
+                cell.textContent = currentTurn;
+
+                let winner = checkWinner(board);
+                if (winner) {
+                    handleGameOver(winner);
+                    return;
+                }
+
+                if (gameMode === 'pvp') {
+                    currentTurn = currentTurn === 'X' ? 'O' : 'X';
+                    matchStatus.textContent = `Giliran: Player ${currentTurn}`;
+                } else if (gameMode === 'bot') {
+                    // Giliran Bot (O)
+                    currentTurn = 'O';
+                    matchStatus.textContent = "Bot sedang berpikir...";
+                    isGameActive = false;
+
+                    setTimeout(() => {
+                        let emptyCells = board.map((val, idx) => val === "" ? idx : null).filter(val => val !== null);
+                        if (emptyCells.length > 0) {
+                            let randomCell = emptyCells[Math.floor(Math.random() * emptyCells.length)];
+                            board[randomCell] = 'O';
+                            cells[randomCell].textContent = 'O';
+
+                            let botWinner = checkWinner(board);
+                            if (botWinner) {
+                                handleGameOver(botWinner);
+                                return;
+                            }
+                        }
+                        currentTurn = 'X';
+                        matchStatus.textContent = "Giliran: Kamu (X)";
+                        isGameActive = true;
+                    }, 500);
+                }
+            });
+        });
+
+        function checkWinner(b) {
+            const patterns = [[0,1,2],[3,4,5],[6,7,8],[0,3,6],[1,4,7],[2,5,8],[0,4,8],[2,4,6]];
+            for (let [x, y, z] of patterns) {
+                if (b[x] && b[x] === b[y] && b[x] === b[z]) return b[x];
+            }
+            return b.includes("") ? null : 'draw';
+        }
+
+        function handleGameOver(winner) {
+            isGameActive = false;
+            let users = JSON.parse(localStorage.getItem('xox_users')) || {};
+            let userData = users[currentUser];
+
+            if (winner === 'draw') {
+                matchStatus.textContent = "Permainan Seri!";
+                userData.total += 1;
+            } else {
+                if (gameMode === 'pvp') {
+                    matchStatus.textContent = `Pemenang: Player ${winner}!`;
+                    if (winner === 'X') userData.wins += 1;
+                    else userData.loses += 1;
+                    userData.total += 1;
+                } else {
+                    if (winner === 'X') {
+                        matchStatus.textContent = "Kamu Menang!";
+                        userData.wins += 1;
+                    } else {
+                        matchStatus.textContent = "Kamu Kalah dari Bot!";
+                        userData.loses += 1;
+                    }
+                    userData.total += 1;
+                }
+            }
+
+            users[currentUser] = userData;
+            localStorage.setItem('xox_users', JSON.stringify(users));
+            updateStatsUI();
+        }
+
+        function updateStatsUI() {
+            let users = JSON.parse(localStorage.getItem('xox_users')) || {};
+            let userData = users[currentUser] || { wins: 0, loses: 0, total: 0 };
+            statWins.textContent = userData.wins;
+            statLoses.textContent = userData.loses;
+            statTotal.textContent = userData.total;
+        }
     </script>
 </body>
 </html>

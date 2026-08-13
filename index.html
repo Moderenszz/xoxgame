@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>XOX Arena - Local PvP</title>
+    <title>XOX Arena - Multi-Feature</title>
     <!-- Google Fonts -->
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
     <style>
@@ -114,6 +114,11 @@
             color: white;
         }
 
+        .btn-success {
+            background: #22c55e;
+            color: white;
+        }
+
         .error-text {
             color: #f87171;
             font-size: 13px;
@@ -187,7 +192,7 @@
             margin-top: 15px;
             display: flex;
             flex-direction: column;
-            gap: 8px;
+            gap: 6px;
         }
 
         .menu-btn {
@@ -208,7 +213,7 @@
             color: #fff;
         }
 
-        /* SECTION PLAYER LIST & SEARCH (Gaya Tombol Interaktif) */
+        /* SECTION PLAYER LIST */
         .player-section {
             margin-top: 15px;
             border-top: 1px solid #1e293b;
@@ -261,23 +266,14 @@
             gap: 6px;
         }
 
-        /* Model Tombol Pemain clickable */
         .player-card {
             background: rgba(30, 41, 59, 0.4);
             border: 1px solid rgba(56, 189, 248, 0.1);
-            padding: 10px 12px;
+            padding: 8px 12px;
             border-radius: 10px;
             display: flex;
             justify-content: space-between;
             align-items: center;
-            cursor: pointer;
-            transition: all 0.2s ease;
-        }
-
-        .player-card:hover {
-            background: rgba(56, 189, 248, 0.15);
-            border-color: #38bdf8;
-            transform: translateX(3px);
         }
 
         .player-card-info {
@@ -314,27 +310,12 @@
             font-weight: 600;
         }
 
-        .stats-box {
-            border-top: 1px solid #1e293b;
-            padding-top: 12px;
-            font-size: 13px;
-            margin-top: 10px;
+        .player-card button.waiting {
+            background: #64748b;
+            cursor: not-allowed;
         }
 
-        .stats-box h4 {
-            font-size: 12px;
-            color: #94a3b8;
-            margin-bottom: 6px;
-        }
-
-        .stats-box p {
-            display: flex;
-            justify-content: space-between;
-            margin-bottom: 3px;
-            color: #cbd5e1;
-        }
-
-        /* MAIN ARENA */
+        /* MAIN ARENA / CONTENT VIEW */
         .main-arena {
             flex: 1;
             display: flex;
@@ -362,32 +343,130 @@
             justify-content: center;
             align-items: center;
             flex-direction: column;
+            padding: 20px;
+            overflow-y: auto;
         }
 
-        .welcome-banner {
+        /* VIEW PANELS */
+        .view-panel {
+            background: rgba(15, 23, 42, 0.6);
+            border: 1px solid rgba(56, 189, 248, 0.2);
+            padding: 30px;
+            border-radius: 16px;
+            width: 100%;
+            max-width: 500px;
             text-align: center;
-            max-width: 400px;
+            backdrop-filter: blur(10px);
         }
 
-        .welcome-banner h3 {
-            font-size: 24px;
-            margin-bottom: 10px;
+        .view-panel h3 {
+            color: #38bdf8;
+            margin-bottom: 15px;
+            font-size: 22px;
+        }
+
+        .stats-grid {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 15px;
+            margin-top: 20px;
+        }
+
+        .stat-card {
+            background: rgba(30, 41, 59, 0.5);
+            border: 1px solid #334155;
+            padding: 15px;
+            border-radius: 12px;
+        }
+
+        .stat-card h5 {
+            font-size: 12px;
+            color: #94a3b8;
+            margin-bottom: 5px;
+        }
+
+        .stat-card span {
+            font-size: 20px;
+            font-weight: bold;
             color: #38bdf8;
         }
 
-        .welcome-banner p {
-            color: #94a3b8;
+        /* LEADERBOARD TABLE */
+        .leaderboard-table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-top: 15px;
+            font-size: 14px;
+        }
+
+        .leaderboard-table th, .leaderboard-table td {
+            padding: 10px;
+            border-bottom: 1px solid #1e293b;
+            text-align: center;
+        }
+
+        .leaderboard-table th {
+            color: #38bdf8;
+            font-weight: 600;
+        }
+
+        .leaderboard-table td:first-child {
+            text-align: left;
+        }
+
+        /* MODAL POPUP TANTANGAN */
+        .modal-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.6);
+            backdrop-filter: blur(5px);
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            z-index: 1000;
+        }
+
+        .modal-box {
+            background: #0f172a;
+            border: 1px solid #38bdf8;
+            padding: 30px;
+            border-radius: 16px;
+            width: 340px;
+            text-align: center;
+            box-shadow: 0 10px 25px rgba(0,0,0,0.5);
+        }
+
+        .modal-box h3 {
+            color: #38bdf8;
+            margin-bottom: 10px;
+            font-size: 20px;
+        }
+
+        .modal-box p {
+            color: #cbd5e1;
             font-size: 14px;
             margin-bottom: 20px;
+        }
+
+        .modal-actions {
+            display: flex;
+            gap: 10px;
+        }
+
+        .modal-actions button {
+            flex: 1;
         }
 
         /* GAME BOARD */
         .board {
             display: grid;
-            grid-template-columns: repeat(3, 100px);
-            grid-template-rows: repeat(3, 100px);
+            grid-template-columns: repeat(3, 90px);
+            grid-template-rows: repeat(3, 90px);
             gap: 10px;
-            margin: 20px 0;
+            margin: 15px 0;
         }
 
         .cell {
@@ -397,7 +476,7 @@
             display: flex;
             align-items: center;
             justify-content: center;
-            font-size: 45px;
+            font-size: 40px;
             font-weight: bold;
             cursor: pointer;
             transition: 0.2s;
@@ -410,8 +489,8 @@
         }
 
         .match-info {
-            margin-bottom: 15px;
-            font-size: 16px;
+            margin-bottom: 10px;
+            font-size: 15px;
             font-weight: 500;
             color: #38bdf8;
             text-align: center;
@@ -422,7 +501,6 @@
 
     <!-- HALAMAN LOGIN / AUTH -->
     <div id="auth-screen" class="auth-container">
-        <!-- Form Login -->
         <div id="login-box" class="auth-box">
             <h2>XOX Arena</h2>
             <p>Masuk untuk bertarung!</p>
@@ -437,7 +515,6 @@
             </div>
         </div>
 
-        <!-- Form Register -->
         <div id="register-box" class="auth-box hidden">
             <h2>Daftar XOX Arena</h2>
             <p>Buat akun baru</p>
@@ -449,6 +526,18 @@
             <p id="register-error" class="error-text"></p>
             <div class="switch-auth">
                 Sudah punya akun? <span id="link-to-login">Login di sini</span>
+            </div>
+        </div>
+    </div>
+
+    <!-- MODAL POPUP TERIMA/TOLAK TANTANGAN -->
+    <div id="challenge-modal" class="modal-overlay hidden">
+        <div class="modal-box">
+            <h3>Tantangan Masuk!</h3>
+            <p id="challenge-msg">Player X menantangmu bertanding!</p>
+            <div class="modal-actions">
+                <button id="btn-accept-challenge" class="btn-success">Iya</button>
+                <button id="btn-decline-challenge" class="btn-danger">Tidak</button>
             </div>
         </div>
     </div>
@@ -465,70 +554,116 @@
             </div>
 
             <div class="menu-list">
-                <button class="menu-btn active" id="menu-pvp">🎮 Mode PvP Lokal (2 Player)</button>
+                <button class="menu-btn active" id="menu-home">🏠 Menu Utama / PvP</button>
+                <button class="menu-btn" id="menu-stats">📊 Statistik Saya</button>
+                <button class="menu-btn" id="menu-profile">👤 Profil Akun</button>
+                <button class="menu-btn" id="menu-leaderboard">🏆 Leaderboard</button>
                 <button class="menu-btn" id="menu-bot">🤖 Lawan Bot (AI)</button>
             </div>
 
-            <div class="player-section">
-                <h4>Pilih Lawan Cepat</h4>
+            <div class="player-section" id="sidebar-player-section">
+                <h4>Daftar Player Online</h4>
                 <div class="search-box">
-                    <input type="text" id="search-player" placeholder="Cari nama player...">
+                    <input type="text" id="search-player" placeholder="Cari player...">
                 </div>
                 <div class="player-list-container">
                     <ul id="player-list"></ul>
                 </div>
             </div>
-
-            <div class="stats-box">
-                <h4>Statistikmu</h4>
-                <p>Menang: <span id="stat-wins">0</span></p>
-                <p>Kalah: <span id="stat-loses">0</span></p>
-                <p>Total Main: <span id="stat-total">0</span></p>
-            </div>
         </aside>
 
         <main class="main-arena">
             <header class="arena-header">
-                <h2 id="mode-title">Battle Arena: PvP Lokal</h2>
+                <h2 id="mode-title">Dashboard Utama</h2>
                 <button id="btn-logout" class="btn-danger">Logout</button>
             </header>
 
             <div id="arena-content" class="arena-content">
-                <div id="welcome-banner" class="welcome-banner">
-                    <h3 id="banner-title">Mulai Pertandingan!</h3>
-                    <p id="banner-desc">Mainkan Tic-Tac-Toe secara bergantian di perangkat ini bersama teman atau pilih lawan dari daftar.</p>
-                    <button id="btn-start-game" class="btn-primary">Mulai Main</button>
+                <!-- PANEL: HOME / GAME BOARD -->
+                <div id="view-home" class="view-panel">
+                    <div id="welcome-banner">
+                        <h3>Selamat Datang di XOX Arena!</h3>
+                        <p>Pilih lawan dari daftar di sebelah kiri untuk mengirim tantangan tanding secara real-time.</p>
+                    </div>
+
+                    <div id="game-board-container" class="hidden">
+                        <div class="match-info">
+                            <span id="match-status">Giliran: Player X</span>
+                        </div>
+                        <div class="board" style="margin: 0 auto;">
+                            <div class="cell" data-index="0"></div>
+                            <div class="cell" data-index="1"></div>
+                            <div class="cell" data-index="2"></div>
+                            <div class="cell" data-index="3"></div>
+                            <div class="cell" data-index="4"></div>
+                            <div class="cell" data-index="5"></div>
+                            <div class="cell" data-index="6"></div>
+                            <div class="cell" data-index="7"></div>
+                            <div class="cell" data-index="8"></div>
+                        </div>
+                        <button id="btn-quit-match" class="btn-secondary" style="margin-top: 15px; width: 100%;">Akhiri Pertandingan</button>
+                    </div>
                 </div>
 
-                <div id="game-board-container" class="hidden">
-                    <div class="match-info">
-                        <span id="match-status">Giliran: Player X</span>
+                <!-- PANEL: STATS -->
+                <div id="view-stats" class="view-panel hidden">
+                    <h3>Statistik Permainanmu</h3>
+                    <p style="color: #94a3b8; font-size: 13px; margin-bottom: 10px;">Ringkasan performa tandingmu di arena.</p>
+                    <div class="stats-grid">
+                        <div class="stat-card">
+                            <h5>MENANG</h5>
+                            <span id="stat-wins">0</span>
+                        </div>
+                        <div class="stat-card">
+                            <h5>KALAH</h5>
+                            <span id="stat-loses">0</span>
+                        </div>
+                        <div class="stat-card">
+                            <h5>TOTAL MAIN</h5>
+                            <span id="stat-total">0</span>
+                        </div>
                     </div>
-                    <div class="board">
-                        <div class="cell" data-index="0"></div>
-                        <div class="cell" data-index="1"></div>
-                        <div class="cell" data-index="2"></div>
-                        <div class="cell" data-index="3"></div>
-                        <div class="cell" data-index="4"></div>
-                        <div class="cell" data-index="5"></div>
-                        <div class="cell" data-index="6"></div>
-                        <div class="cell" data-index="7"></div>
-                        <div class="cell" data-index="8"></div>
-                    </div>
-                    <button id="btn-quit-match" class="btn-secondary" style="margin-top: 20px; width: 100%;">Selesai / Kembali</button>
+                </div>
+
+                <!-- PANEL: PROFILE -->
+                <div id="view-profile" class="view-panel hidden">
+                    <h3>Profil Pengguna</h3>
+                    <div class="avatar-placeholder" id="profile-big-avatar" style="width: 80px; height: 80px; font-size: 32px; margin: 0 auto 15px auto;">U</div>
+                    <p style="font-size: 18px; font-weight: bold; color: #fff;" id="profile-username-text">Username</p>
+                    <p style="color: #4ade80; font-size: 13px; margin-top: 5px;">Status: Aktif / Terverifikasi</p>
+                </div>
+
+                <!-- PANEL: LEADERBOARD -->
+                <div id="view-leaderboard" class="view-panel hidden" style="max-width: 600px;">
+                    <h3>Leaderboard Global</h3>
+                    <p style="color: #94a3b8; font-size: 13px; margin-bottom: 10px;">Peringkat player berdasarkan jumlah kemenangan terbanyak.</p>
+                    <table class="leaderboard-table">
+                        <thead>
+                            <tr>
+                                <th>Player</th>
+                                <th>Menang</th>
+                                <th>Kalah</th>
+                                <th>Main</th>
+                            </tr>
+                        </thead>
+                        <tbody id="leaderboard-body">
+                            <!-- Render via JS -->
+                        </tbody>
+                    </table>
                 </div>
             </div>
         </main>
     </div>
 
-    <!-- Script Game Logika -->
+    <!-- Script Utama -->
     <script>
         let currentUser = null;
         let gameMode = 'pvp'; // 'pvp' atau 'bot'
-        let opponentName = 'Player 2';
+        let opponentName = '';
         let board = Array(9).fill("");
         let currentTurn = 'X';
         let isGameActive = false;
+        let challengeInterval = null;
 
         // DOM Elements
         const authScreen = document.getElementById('auth-screen');
@@ -536,12 +671,10 @@
         const registerBox = document.getElementById('register-box');
         const linkToRegister = document.getElementById('link-to-register');
         const linkToLogin = document.getElementById('link-to-login');
-
         const regUsername = document.getElementById('register-username');
         const regPassword = document.getElementById('register-password');
         const btnRegister = document.getElementById('btn-register');
         const regError = document.getElementById('register-error');
-
         const logUsername = document.getElementById('login-username');
         const logPassword = document.getElementById('login-password');
         const btnLogin = document.getElementById('btn-login');
@@ -551,27 +684,48 @@
         const btnLogout = document.getElementById('btn-logout');
         const displayUsername = document.getElementById('display-username');
         const myAvatar = document.getElementById('my-avatar');
-        const statWins = document.getElementById('stat-wins');
-        const statLoses = document.getElementById('stat-loses');
-        const statTotal = document.getElementById('stat-total');
 
-        const menuPvp = document.getElementById('menu-pvp');
+        // Menu Sidebar
+        const menuHome = document.getElementById('menu-home');
+        const menuStats = document.getElementById('menu-stats');
+        const menuProfile = document.getElementById('menu-profile');
+        const menuLeaderboard = document.getElementById('menu-leaderboard');
         const menuBot = document.getElementById('menu-bot');
         const modeTitle = document.getElementById('mode-title');
+        const sidebarPlayerSection = document.getElementById('sidebar-player-section');
 
-        const searchPlayerInput = document.getElementById('search-player');
-        const playerListEl = document.getElementById('player-list');
+        // Panels
+        const viewHome = document.getElementById('view-home');
+        const viewStats = document.getElementById('view-stats');
+        const viewProfile = document.getElementById('view-profile');
+        const viewLeaderboard = document.getElementById('view-leaderboard');
 
+        // Game elements
         const welcomeBanner = document.getElementById('welcome-banner');
-        const bannerTitle = document.getElementById('banner-title');
-        const bannerDesc = document.getElementById('banner-desc');
         const gameBoardContainer = document.getElementById('game-board-container');
-        const btnStartGame = document.getElementById('btn-start-game');
         const matchStatus = document.getElementById('match-status');
         const cells = document.querySelectorAll('.cell');
         const btnQuitMatch = document.getElementById('btn-quit-match');
 
-        // Toggle Form Auth
+        // Player List & Search
+        const searchPlayerInput = document.getElementById('search-player');
+        const playerListEl = document.getElementById('player-list');
+
+        // Modal Tantangan
+        const challengeModal = document.getElementById('challenge-modal');
+        const challengeMsg = document.getElementById('challenge-msg');
+        const btnAcceptChallenge = document.getElementById('btn-accept-challenge');
+        const btnDeclineChallenge = document.getElementById('btn-decline-challenge');
+
+        // Stats elements
+        const statWins = document.getElementById('stat-wins');
+        const statLoses = document.getElementById('stat-loses');
+        const statTotal = document.getElementById('stat-total');
+        const profileBigAvatar = document.getElementById('profile-big-avatar');
+        const profileUsernameText = document.getElementById('profile-username-text');
+        const leaderboardBody = document.getElementById('leaderboard-body');
+
+        // Auth Navigation
         linkToRegister.addEventListener('click', () => {
             loginBox.classList.add('hidden');
             registerBox.classList.remove('hidden');
@@ -584,46 +738,28 @@
             regError.textContent = "";
         });
 
-        // Register
+        // Register Logic
         btnRegister.addEventListener('click', () => {
             const username = regUsername.value.trim();
             const password = regPassword.value.trim();
-
-            if (!username || !password) {
-                regError.textContent = "Semua kolom harus diisi!";
-                return;
-            }
-            if (password.length < 6) {
-                regError.textContent = "Password minimal 6 karakter!";
-                return;
-            }
+            if (!username || !password) { regError.textContent = "Semua kolom harus diisi!"; return; }
+            if (password.length < 6) { regError.textContent = "Password minimal 6 karakter!"; return; }
 
             let users = JSON.parse(localStorage.getItem('xox_users')) || {};
-            if (users[username]) {
-                regError.textContent = "Username sudah terdaftar!";
-                return;
-            }
+            if (users[username]) { regError.textContent = "Username sudah terdaftar!"; return; }
 
-            users[username] = {
-                password: password,
-                wins: 0,
-                loses: 0,
-                total: 0
-            };
-
+            users[username] = { password: password, wins: 0, loses: 0, total: 0, challenge: null };
             localStorage.setItem('xox_users', JSON.stringify(users));
             alert("Pendaftaran berhasil! Silakan login.");
             registerBox.classList.add('hidden');
             loginBox.classList.remove('hidden');
-            regUsername.value = '';
-            regPassword.value = '';
+            regUsername.value = ''; regPassword.value = '';
         });
 
-        // Login
+        // Login Logic
         btnLogin.addEventListener('click', () => {
             const username = logUsername.value.trim();
             const password = logPassword.value.trim();
-
             let users = JSON.parse(localStorage.getItem('xox_users')) || {};
 
             if (!users[username] || users[username].password !== password) {
@@ -639,14 +775,13 @@
         // Logout
         btnLogout.addEventListener('click', () => {
             localStorage.removeItem('xox_current_user');
+            clearInterval(challengeInterval);
             currentUser = null;
             gameScreen.classList.add('hidden');
             authScreen.classList.remove('hidden');
-            logUsername.value = '';
-            logPassword.value = '';
+            logUsername.value = ''; logPassword.value = '';
         });
 
-        // Cek Sesi
         window.addEventListener('DOMContentLoaded', () => {
             const savedUser = localStorage.getItem('xox_current_user');
             if (savedUser) {
@@ -660,92 +795,196 @@
             gameScreen.classList.remove('hidden');
             displayUsername.textContent = currentUser;
             myAvatar.textContent = currentUser.charAt(0).toUpperCase();
+            profileBigAvatar.textContent = currentUser.charAt(0).toUpperCase();
+            profileUsernameText.textContent = currentUser;
+            
             updateStatsUI();
             loadPlayerList();
+            startGlobalPoller();
         }
 
-        // Load & Render Player List (Bentuk Kartu Tombol Interaktif)
+        // Pindah Tab Sidebar
+        function switchView(activeView, title) {
+            [viewHome, viewStats, viewProfile, viewLeaderboard].forEach(v => v.classList.add('hidden'));
+            [menuHome, menuStats, menuProfile, menuLeaderboard, menuBot].forEach(m => m.classList.remove('active'));
+            activeView.classList.remove('hidden');
+            modeTitle.textContent = title;
+        }
+
+        menuHome.addEventListener('click', () => {
+            switchView(viewHome, "Menu Utama / PvP");
+            menuHome.classList.add('active');
+            sidebarPlayerSection.classList.remove('hidden');
+        });
+
+        menuStats.addEventListener('click', () => {
+            switchView(viewStats, "Statistik Permainan");
+            menuStats.classList.add('active');
+            sidebarPlayerSection.classList.add('hidden');
+            updateStatsUI();
+        });
+
+        menuProfile.addEventListener('click', () => {
+            switchView(viewProfile, "Profil Pengguna");
+            menuProfile.classList.add('active');
+            sidebarPlayerSection.classList.add('hidden');
+        });
+
+        menuLeaderboard.addEventListener('click', () => {
+            switchView(viewLeaderboard, "Papan Peringkat (Leaderboard)");
+            menuLeaderboard.classList.add('active');
+            sidebarPlayerSection.classList.add('hidden');
+            loadLeaderboardData();
+        });
+
+        menuBot.addEventListener('click', () => {
+            switchView(viewHome, "Battle Arena: Lawan Bot");
+            menuBot.classList.add('active');
+            sidebarPlayerSection.classList.add('hidden');
+            gameMode = 'bot';
+            opponentName = 'Bot AI';
+            welcomeBanner.classList.add('hidden');
+            gameBoardContainer.classList.remove('hidden');
+            isGameActive = true;
+            resetBoardData();
+        });
+
+        // Load Player List dengan Status Menunggu
         function loadPlayerList(filter = "") {
             let users = JSON.parse(localStorage.getItem('xox_users')) || {};
             playerListEl.innerHTML = '';
-
             let found = false;
+
             for (let name in users) {
-                if (name === currentUser) continue; // Jangan tampilkan diri sendiri
+                if (name === currentUser) continue;
                 if (filter && !name.toLowerCase().includes(filter.toLowerCase())) continue;
 
                 found = true;
                 let li = document.createElement('li');
                 li.className = 'player-card';
-                // Seluruh kartu bisa diklik, atau klik tombol "Tantang"
-                li.onclick = () => selectOpponent(name);
 
+                let isWaiting = users[currentUser].outgoingChallenge === name;
+                
                 li.innerHTML = `
                     <div class="player-card-info">
                         <div class="player-mini-avatar">${name.charAt(0).toUpperCase()}</div>
                         <span>${name}</span>
                     </div>
-                    <button onclick="event.stopPropagation(); selectOpponent('${name}')">Tantang</button>
+                    <button class="${isWaiting ? 'waiting' : ''}" onclick="sendChallenge('${name}')">
+                        ${isWaiting ? 'Menunggu...' : 'Tantang'}
+                    </button>
                 `;
                 playerListEl.appendChild(li);
             }
 
             if (!found) {
-                playerListEl.innerHTML = `<li style="justify-content: center; color: #94a3b8; font-size: 12px; background: transparent; border: none; cursor: default;">Tidak ada player lain</li>`;
+                playerListEl.innerHTML = `<li style="justify-content: center; color: #94a3b8; font-size: 12px; background: transparent; border: none;">Tidak ada player lain</li>`;
             }
         }
 
-        // Search Filter
         searchPlayerInput.addEventListener('input', (e) => {
             loadPlayerList(e.target.value);
         });
 
-        // Pilih Lawan dari Daftar
-        window.selectOpponent = function(name) {
-            opponentName = name;
-            gameMode = 'pvp';
-            menuPvp.classList.add('active');
-            menuBot.classList.remove('active');
-            modeTitle.textContent = `Battle PvP: ${currentUser} vs ${opponentName}`;
-            bannerTitle.textContent = `Lawan: ${opponentName}`;
-            bannerDesc.textContent = `Kamu akan bertanding melawan ${opponentName} secara bergantian di perangkat ini.`;
+        // Kirim Tantangan
+        window.sendChallenge = function(targetName) {
+            let users = JSON.parse(localStorage.getItem('xox_users')) || {};
             
-            // Langsung otomatis mulai game saat player diklik!
-            welcomeBanner.classList.add('hidden');
-            gameBoardContainer.classList.remove('hidden');
-            isGameActive = true;
-            resetBoardData();
+            // Cek jika sedang menunggu
+            if (users[currentUser].outgoingChallenge) return;
+
+            users[currentUser].outgoingChallenge = targetName;
+            users[targetName].incomingChallenge = {
+                from: currentUser,
+                status: 'pending'
+            };
+
+            localStorage.setItem('xox_users', JSON.stringify(users));
+            loadPlayerList(searchPlayerInput.value);
         }
 
-        // Pindah Menu Mode
-        menuPvp.addEventListener('click', () => {
+        // Poller global untuk cek status tantangan masuk & keluar
+        function startGlobalPoller() {
+            if (challengeInterval) clearInterval(challengeInterval);
+
+            challengeInterval = setInterval(() => {
+                if (!currentUser) return;
+                let users = JSON.parse(localStorage.getItem('xox_users')) || {};
+                let me = users[currentUser];
+                if (!me) return;
+
+                // 1. Cek apakah ada tantangan masuk dari orang lain
+                if (me.incomingChallenge && me.incomingChallenge.status === 'pending') {
+                    let challenger = me.incomingChallenge.from;
+                    challengeMsg.textContent = `${challenger} menantangmu bertanding!`;
+                    challengeModal.classList.remove('hidden');
+                }
+
+                // 2. Cek apakah tantangan keluar kita di-accept atau di-decline
+                if (me.outgoingChallenge) {
+                    let target = me.outgoingChallenge;
+                    let targetData = users[target];
+                    if (targetData && targetData.incomingChallenge) {
+                        if (targetData.incomingChallenge.status === 'accepted') {
+                            // Mulai game sebagai Player X (Penantang)
+                            me.outgoingChallenge = null;
+                            targetData.incomingChallenge = null;
+                            localStorage.setItem('xox_users', JSON.stringify(users));
+
+                            startPvPMatch(target, 'X');
+                        } else if (targetData.incomingChallenge.status === 'declined') {
+                            // Ditolak
+                            me.outgoingChallenge = null;
+                            targetData.incomingChallenge = null;
+                            localStorage.setItem('xox_users', JSON.stringify(users));
+                            alert(`Tantanganmu ditolak oleh ${target}.`);
+                            loadPlayerList(searchPlayerInput.value);
+                        }
+                    }
+                }
+
+                // Refresh list player aktif berkala
+                if (viewHome.classList.contains('hidden') === false && gameMode === 'pvp' && !isGameActive) {
+                    loadPlayerList(searchPlayerInput.value);
+                }
+            }, 1000);
+        }
+
+        // Tombol Terima Tantangan (Iya)
+        btnAcceptChallenge.addEventListener('click', () => {
+            let users = JSON.parse(localStorage.getItem('xox_users')) || {};
+            let me = users[currentUser];
+            let challenger = me.incomingChallenge.from;
+
+            me.incomingChallenge.status = 'accepted';
+            localStorage.setItem('xox_users', JSON.stringify(users));
+            challengeModal.classList.add('hidden');
+
+            // Mulai game sebagai Player O (Yang ditantang)
+            startPvPMatch(challenger, 'O');
+        });
+
+        // Tombol Tolak Tantangan (Tidak)
+        btnDeclineChallenge.addEventListener('click', () => {
+            let users = JSON.parse(localStorage.getItem('xox_users')) || {};
+            let me = users[currentUser];
+
+            me.incomingChallenge.status = 'declined';
+            localStorage.setItem('xox_users', JSON.stringify(users));
+            challengeModal.classList.add('hidden');
+            me.incomingChallenge = null;
+            localStorage.setItem('xox_users', JSON.stringify(users));
+        });
+
+        function startPvPMatch(oppName, role) {
             gameMode = 'pvp';
-            opponentName = 'Player 2';
-            menuPvp.classList.add('active');
-            menuBot.classList.remove('active');
-            modeTitle.textContent = "Battle Arena: PvP Lokal";
-            bannerTitle.textContent = "Mulai Pertandingan!";
-            bannerDesc.textContent = "Mainkan Tic-Tac-Toe secara bergantian di perangkat ini bersama teman.";
-            resetMatch();
-        });
-
-        menuBot.addEventListener('click', () => {
-            gameMode = 'bot';
-            opponentName = 'Bot AI';
-            menuBot.classList.add('active');
-            menuPvp.classList.remove('active');
-            modeTitle.textContent = "Battle Arena: Lawan Bot";
-            bannerTitle.textContent = "Lawan Bot (AI)";
-            bannerDesc.textContent = "Uji kemampuanmu melawan kecerdasan buatan komputer.";
-            resetMatch();
-        });
-
-        btnStartGame.addEventListener('click', () => {
+            opponentName = oppName;
+            modeTitle.textContent = `Battle PvP: ${currentUser} vs ${opponentName} (${role})`;
             welcomeBanner.classList.add('hidden');
             gameBoardContainer.classList.remove('hidden');
             isGameActive = true;
-            resetBoardData();
-        });
+            resetBoardData(role === 'X' ? currentUser : opponentName);
+        }
 
         btnQuitMatch.addEventListener('click', () => {
             gameBoardContainer.classList.add('hidden');
@@ -753,24 +992,19 @@
             isGameActive = false;
         });
 
-        function resetMatch() {
-            gameBoardContainer.classList.add('hidden');
-            welcomeBanner.classList.remove('hidden');
-            isGameActive = false;
-        }
-
-        function resetBoardData() {
+        function resetBoardData(turnUser = currentUser) {
             board = Array(9).fill("");
             currentTurn = 'X';
-            matchStatus.textContent = `Giliran: ${currentUser} (X)`;
+            matchStatus.textContent = `Giliran: ${turnUser} (X)`;
             cells.forEach(c => c.textContent = "");
         }
 
-        // Logika Klik Sel Papan
+        // Logika Klik Papan Game
         cells.forEach((cell, index) => {
             cell.addEventListener('click', () => {
                 if (!isGameActive || board[index] !== "") return;
 
+                // Validasi giliran PvP lokal simulasi
                 board[index] = currentTurn;
                 cell.textContent = currentTurn;
 
@@ -780,11 +1014,7 @@
                     return;
                 }
 
-                if (gameMode === 'pvp') {
-                    currentTurn = currentTurn === 'X' ? 'O' : 'X';
-                    let activeName = currentTurn === 'X' ? currentUser : opponentName;
-                    matchStatus.textContent = `Giliran: ${activeName} (${currentTurn})`;
-                } else if (gameMode === 'bot') {
+                if (gameMode === 'bot') {
                     currentTurn = 'O';
                     matchStatus.textContent = "Bot sedang berpikir...";
                     isGameActive = false;
@@ -806,6 +1036,10 @@
                         matchStatus.textContent = `Giliran: ${currentUser} (X)`;
                         isGameActive = true;
                     }, 500);
+                } else {
+                    currentTurn = currentTurn === 'X' ? 'O' : 'X';
+                    let activeName = currentTurn === 'X' ? currentUser : opponentName;
+                    matchStatus.textContent = `Giliran: ${activeName} (${currentTurn})`;
                 }
             });
         });
@@ -827,13 +1061,7 @@
                 matchStatus.textContent = "Permainan Seri!";
                 userData.total += 1;
             } else {
-                if (gameMode === 'pvp') {
-                    let winningName = winner === 'X' ? currentUser : opponentName;
-                    matchStatus.textContent = `Pemenang: ${winningName} (${winner})!`;
-                    if (winner === 'X') userData.wins += 1;
-                    else userData.loses += 1;
-                    userData.total += 1;
-                } else {
+                if (gameMode === 'bot') {
                     if (winner === 'X') {
                         matchStatus.textContent = "Kamu Menang!";
                         userData.wins += 1;
@@ -841,6 +1069,12 @@
                         matchStatus.textContent = "Kamu Kalah dari Bot!";
                         userData.loses += 1;
                     }
+                    userData.total += 1;
+                } else {
+                    let winningName = winner === 'X' ? currentUser : opponentName;
+                    matchStatus.textContent = `Pemenang: ${winningName} (${winner})!`;
+                    if (winner === 'X') userData.wins += 1;
+                    else userData.loses += 1;
                     userData.total += 1;
                 }
             }
@@ -856,6 +1090,28 @@
             statWins.textContent = userData.wins;
             statLoses.textContent = userData.loses;
             statTotal.textContent = userData.total;
+        }
+
+        function loadLeaderboardData() {
+            let users = JSON.parse(localStorage.getItem('xox_users')) || {};
+            let userArray = [];
+            for (let name in users) {
+                userArray.push({ name: name, ...users[name] });
+            }
+            // Urutkan berdasarkan kemenangan terbanyak
+            userArray.sort((a, b) => b.wins - a.wins);
+
+            leaderboardBody.innerHTML = '';
+            userArray.forEach(u => {
+                let tr = document.createElement('tr');
+                tr.innerHTML = `
+                    <td><strong>${u.name}</strong></td>
+                    <td style="color: #4ade80;">${u.wins}</td>
+                    <td style="color: #f87171;">${u.loses}</td>
+                    <td>${u.total}</td>
+                `;
+                leaderboardBody.appendChild(tr);
+            });
         }
     </script>
 </body>

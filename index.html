@@ -1,0 +1,98 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>XOX Arena - Modern PvP</title>
+    <link rel="stylesheet" href="style.css">
+    <!-- Google Fonts -->
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+</head>
+<body>
+
+    <!-- HALAMAN LOGIN / AUTH -->
+    <div id="auth-screen" class="auth-container">
+        <div class="auth-box">
+            <h2>XOX Arena</h2>
+            <p>Masuk atau daftar untuk mulai bertarung!</p>
+            <input type="text" id="auth-username" placeholder="Username">
+            <input type="password" id="auth-password" placeholder="Password">
+            <div class="auth-buttons">
+                <button id="btn-login" class="btn-primary">Login</button>
+                <button id="btn-register" class="btn-secondary">Register</button>
+            </div>
+            <p id="auth-error" class="error-text"></p>
+        </div>
+    </div>
+
+    <!-- HALAMAN UTAMA GAME -->
+    <div id="game-screen" class="game-layout hidden">
+        
+        <!-- SIDEBAR KIRI (Daftar Pemain) -->
+        <aside class="sidebar">
+            <div class="user-profile">
+                <div class="avatar-placeholder" id="my-avatar">U</div>
+                <div class="user-info">
+                    <h4 id="display-username">Username</h4>
+                    <span class="status-online">● Online</span>
+                </div>
+            </div>
+
+            <div class="search-box">
+                <input type="text" id="search-player" placeholder="Cari pemain...">
+            </div>
+
+            <div class="player-list-container">
+                <h3>Pemain Online</h3>
+                <ul id="player-list">
+                    <!-- Daftar player akan masuk lewat JavaScript -->
+                </ul>
+            </div>
+
+            <div class="stats-box">
+                <h4>Statistikmu</h4>
+                <p>Menang: <span id="stat-wins">0</span></p>
+                <p>Kalah: <span id="stat-loses">0</span></p>
+                <p>Total Main: <span id="stat-total">0</span></p>
+            </div>
+        </aside>
+
+        <!-- KONTEN UTAMA (Arena & Pertarungan) -->
+        <main class="main-arena">
+            <header class="arena-header">
+                <h2>Battle Arena X-O-X</h2>
+                <button id="btn-logout" class="btn-danger">Logout</button>
+            </header>
+
+            <div id="arena-content" class="arena-content">
+                <div class="welcome-banner">
+                    <h3>Selamat Datang di XOX Arena!</h3>
+                    <p>Pilih pemain dari daftar di sebelah kiri untuk menantang mereka bertarung secara 1v1.</p>
+                </div>
+
+                <!-- Papan Game (Hidden sampai match dimulai) -->
+                <div id="game-board-container" class="hidden">
+                    <div class="match-info">
+                        <span id="match-status">Menunggu lawan...</span>
+                    </div>
+                    <div class="board">
+                        <div class="cell" data-index="0"></div>
+                        <div class="cell" data-index="1"></div>
+                        <div class="cell" data-index="2"></div>
+                        <div class="cell" data-index="3"></div>
+                        <div class="cell" data-index="4"></div>
+                        <div class="cell" data-index="5"></div>
+                        <div class="cell" data-index="6"></div>
+                        <div class="cell" data-index="7"></div>
+                        <div class="cell" data-index="8"></div>
+                    </div>
+                    <button id="btn-quit-match" class="btn-secondary hidden">Keluar Pertandingan</button>
+                </div>
+            </div>
+        </main>
+    </div>
+
+    <!-- Script Firebase & Logika Game -->
+    <script type="module" src="script.js"></script>
+</body>
+</html>
